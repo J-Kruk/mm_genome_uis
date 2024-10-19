@@ -1,0 +1,220 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script>
+<script async src="https://cse.google.com/cse.js?cx=51a64809eff804ed1"></script>
+<script async src="https://cse.google.com/cse.js?cx=000888210889775888983:y9tkcjel090"></script>
+<script src="./resources/js/functions.js" type="text/javascript"></script>
+<script src="./resources/js/main.js" type="text/javascript"></script>
+<link href="./resources/css/index.css" type="text/css" rel="stylesheet">
+<meta http-equiv="Cache-control" content="no-cache">
+
+
+<div id='main'>
+
+    <crowd-form>
+
+        <div id="logos">
+            <img class="logo" src="./resources/images/salt-logo-2.jpg">
+        </div>
+
+        <!-- Pop-up Overlay -->
+        <div id="popupOverlay"></div>
+
+        <div id="anno_id_popup">
+            <p>Enter your participant ID</p>
+            <textarea id="anno_id_input" name="anno_id_input"></textarea>
+
+            <p>Enter your cultural background</p>
+            <div class="dropdown">
+                <select id="culture_input" name="culture_input">
+                    <option disabled selected>Please select</option>
+                    <option value="American">American</option>
+                    <option value="Australian">Australian</option>
+                    <option value="Argentine">Argentine</option>
+                    <option value="German">German</option>
+                    <option value="Indian">Indian</option>
+                    <option value="Nigerian">Nigerian</option>
+                </select>
+            </div>
+            <!-- <p id="anno_input_message"></p> -->
+            <button id="close-popup-2">Done</button>
+        </div>
+
+
+        <!-- Title & Intro Component -->
+
+        <h1 class='titles texts'>Culture Genome: Visual Representations of Cultural Knowledge</h1>
+        <div class="intros texts" id="part2-intro">
+            <h2>Instructions </h2>
+
+            <p>
+                An example <b>image</b> and a <b>concept</b> is displayed below.
+                Please review this pair and consider whether this image is a good representation
+                of this <b>concept, theme, or idea</b> in your culture. Please complete the tasks that follow.
+            </p>
+
+            <div class="expand_intros" id="exp_intro">
+                <br>
+                <h3>Task Descriptions</h3>
+
+                <p>
+                <ul>
+                    <li>For the <b>first question</b>, let us know if the concept, theme, or idea exists in your
+                        culture. Select yes or no.</li>
+                    <li>The <b>second question</b> will ask if you believe the image is a good representation of the
+                        concept in your culture. Select yes or no. </li>
+                    <ul>
+                        <li>If no, let us know what about this image fails to represent this concept in 1 - 3
+                            sentences.
+                        </li>
+                    </ul>
+                    <li>In the <b>third question</b> we ask that you use the Google Image Search tool on this page
+                        to
+                        select another image for this concept.</li>
+                    <ul>
+                        <li>Select an image that you believe effectively represents this concept or idea in your
+                            culture.</li>
+                        <li>Only select images through this tool, do not upload any personal photographs from your
+                            computer.</li>
+                    </ul>
+                    <li>The <b>final question</b> will ask you to provide a description of the image you selected.
+                    </li>
+                    <ul>
+                        <li>Why do you believe this image is a good representation of this concept in your culture?
+                        </li>
+                        <li>Give your answer in 2 - 3 sentences.</li>
+                    </ul>
+                </ul>
+                </p>
+            </div>
+
+            <!--Expand button -->
+            <center>
+                <button id="expand_intro_button" type="button"> View Task Descriptions
+                </button>
+            </center>
+        </div>
+        <br>
+
+        <!-- Concept & Image Example -->
+        <div class="concept_example texts">
+            <p class="concept" id="concept_head"><b>Concept:</b> Aesthetics, Body Art and Tattoos</p>
+            <p class="concept" id="concept_question">What Aesthetics are common in American culture as it pertains to
+                Body Art and Tattoos?
+            </p>
+            <p class="image_note">The following image is meant to visually represent this concept
+                or theme.</p>
+            <!-- <img class="exp_concept_img" src="https://news.syr.edu/wp-content/uploads/2015/08/DSC_0144-600x400.jpg" /> -->
+            <!-- <p><b>Reasoning:</b> Japanese temples are designed to evoke serenity and contemplation in alignment with
+                Zen
+                and Shingon Buddhism principles. They offer a unique fusion of aesthetics and spirituality, a
+                hallmark
+                of Japanese architecture that transcends the physical realm and speaks to the profound
+                interconnectedness between the built environment and the human spirit.</p> -->
+
+            <img class="exp_concept_img" src="data/prompts/example_images/American_7_img_2.png" />
+            <p id="example_img_cap"><b>Reasoning:</b> Common American aesthetics in body art include the use of bold
+                lines and vibrant colors, exemplified by the bold tribal tattoos of Native American heritage.
+                Additionally, there is a trend towards intricate, detailed designs inspired by various art
+                movements, such as the realism and symbolism of traditional Japanese tattoos.</p>
+
+        </div>
+
+
+        <!-- Q1: Does Concept Exist? -->
+
+        <div class='question_divs texts'>
+            <br>
+            <h3><b>Q1:</b> Does this concept exist in your culture?</h3>
+            <div class="button_form" id="concept_excists">
+                <button class="q1" id="exists_1" value="yes">Yes</button>
+                <button class="q1" id="exists_2" value="no">No</button>
+                <button class="q1" id="exists_3" value="not_sure">Not Sure</button>
+            </div>
+        </div>
+
+        <div class="question_divs texts" id="exists_expl">
+            <br>
+            <h3>Please explain. What would be the closest practice or belief in your culture to the concept shown above?
+            </h3>
+            <textarea id="q1_2" name="q1_2">Explain in 1 - 3 sentences ...</textarea>
+        </div>
+
+        <!-- Q2: Is it a good representation? -->
+
+        <div class='question_divs texts' id="q2_div">
+            <br>
+            <h3><b>Q2:</b> Is this image a good representation of this concept in your culture?</h3>
+            <div class="button_form" id="good_rep">
+                <button class="q2" id="rep_1" value="yes">Yes</button>
+                <button class="q2" id="rep_2" value="no">No</button>
+                <button class="q2" id="rep_3" value="not_sure">Somewhat</button>
+            </div>
+        </div>
+
+        <div class="question_divs texts" id="good_rep_expl">
+            <br>
+            <h3>What makes this image a poor representation?</h3>
+            <textarea id="q2_2" name="q2_2">Explain in 1 - 3 sentences ...</textarea>
+        </div>
+
+        <!-- Q3: Image Selection Tool: Embedded Search Tool -->
+
+        <div class='question_divs texts' id="q3_div">
+            <!--<div class="gcse-searchbox">, <div class="gcse-searchresults">-->
+            <br>
+            <h3><b>Q3:</b> Use the Image Search Tool below to select an image that represents the concept or idea
+                above in your culture.</h3>
+
+            <p class="image_note">If the search result DOES NOT show images, please refresh the page. Your pevious
+                inputs will be saved.</p>
+
+            <!-- Search Box -->
+            <div class="gcse-searchbox" data-enableHistory="true" data-autoCompleteMaxCompletions="5"
+                enableImageSearch="true" defaultToImageSearch="true" disableWebSearch="true"
+                image_as_rights="cc_publicdomain%7Ccc_attribute%7Ccc_sharealike%7Ccc_noncommercial%7Ccc_nonderived">
+            </div>
+            <!-- Search Results -->
+            <div class="gcse-searchresults" data-refinementStyle="link"></div>
+        </div>
+
+        <!-- Visualize selected image -->
+
+        <div id="selected_img_box" class="question_divs texts"></div>
+
+        <!-- Q4: Image Description -->
+
+        <div class='question_divs texts' id="q4_div">
+            <br>
+            <h3><b>Q4:</b> Please provide a description of the image you selected.</h3>
+            <p>Why is this image a good representation of this concept, idea, or practice in your culture?</p>
+            <textarea id="q4" name="q4">Describe the image in 2 - 3 sentences...</textarea>
+        </div>
+
+        <div id="input_error_popup">
+            <p id="error_message"></p>
+            <button id="close-popup-1">Close</button>
+        </div>
+
+        <div class='question_divs texts' id="submit_container">
+            <button id="submit_button" type="button">Submit</button>
+        </div>
+
+        <div id="issue_display">
+
+            <div id="issue_message">
+                <p>
+                    If you are experiencing any issues with this HIT, have general questions or feedback,
+                    please contact the project lead at <b>jkruk3@gatech.edu</b>. Thank you.
+                </p>
+            </div>
+
+            <div id="issue_div">
+                <button id="issue_button" type="button">
+                    <img id="issue_img" src="./resources/images/info_button_clear.png" />
+                </button>
+            </div>
+
+        </div>
+        <br><br>
+
+    </crowd-form>
+</div>
