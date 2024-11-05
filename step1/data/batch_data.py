@@ -24,11 +24,12 @@ for ind in range(num_batches):
     if ind < 4:
         b = full_df.iloc[start_idx:end_idx]
         b_filename = os.path.join(dest_dir, f"batch_{ind+1}.csv")
-        b.to_csv(b_filename, index=False)
+        b.to_csv(b_filename, sep='|', index=False)
 
         start_idx = end_idx
         end_idx += batch_size
+        
     else:
         b = full_df.iloc[start_idx:]
         b_filename = os.path.join(dest_dir, f"batch_{ind+1}.csv")
-        b.to_csv(b_filename, index=False)
+        b.to_csv(b_filename, sep='|', index=False)

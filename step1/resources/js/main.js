@@ -1,9 +1,10 @@
 $(document).ready(function () {
     console.log('ready!!');
-    const data_url = 'data/prompts/visual_taxonomy_answers_full_v1.csv'
+    const data_url = 'data/prompts/batches/pilot.csv'
 
     // DEBUG :: reset the idx:
     //localStorage.setItem('df_idx', 1)
+    // localStorage.clear();
 
     var df_idx = localStorage.getItem('df_idx');
     if (df_idx == null) {
@@ -93,17 +94,18 @@ $(document).ready(function () {
     // Function to populate the HTML
     async function updateHTML(data_url, culture, df_idx) {
         var csvData = await fetchNewCSVRow(data_url, culture, df_idx);
-        category_ = capitalizeWords(csvData.category);
+        var category_ = capitalizeWords(csvData.category);
         if (csvData) {
             $('#concept_head').html(`<b>Concept:</b>  ${category_}, ${csvData.seed_concept}`);
             $('#concept_question').html(`${csvData.question}`);
             $('#example_img_cap').html(`<b>Reasoning:</b> ${csvData.example_ans}`);
-            $(".exp_concept_img").attr("src", `data/prompts/example_images/${csvData.culture}_${csvData.img_id}_img_0.png`);
+            // $(".exp_concept_img").attr("src", `data/prompts/example_images/${csvData.culture}_${csvData.img_id}_img_0.png`);
+            $(".exp_concept_img").attr("src", `https://mm-genome.s3.amazonaws.com/annotation-data/example_images/${csvData.culture}_${csvData.img_id}_img_0.png`);
         }
     }
 
     // Updating the HTML as per data in the CSV
-    updateHTML(data_url, culture_gl, df_idx)
+    updateHTML(data_url, culture_gl, df_idx);
 
     // submit error pop-up
     $("#close-popup-2").click(function () {
@@ -132,6 +134,7 @@ $(document).ready(function () {
 
             $('#popupOverlay').hide()
             $("#anno_id_popup").hide();
+            updateHTML(data_url, culture_gl, df_idx);
         };
     });
 
@@ -390,47 +393,102 @@ $(document).ready(function () {
 
 
             // Send the data to a PHP file for processing
-            $.ajax({
-                type: "POST",
-                url: "resources/php/data_handler.php",
-                data: {
-                    anno_id: anno_id,
-                    culture: culture_gl,
-                    example_id: example_id_gl,
-                    category: category_gl,
-                    seed_concept: seed_concept_gl,
-                    q1_input: q1_input,
-                    q1_exp: q1_exp,
-                    q2_input: q2_input,
-                    q2_exp: q2_exp,
-                    q3_input: q3_input,
-                    q3_query: q3_query,
-                    q3_rank: q3_rank,
-                    q4_input: q4_input
+            // $.ajax({
+            //     type: "POST",
+            //     url: "nodejs-ssl-server/mm_genome_uis/step1/resources/php/data_handler.php",
+            //     data: {
+            //         anno_id: anno_id,
+            //         culture: culture_gl,
+            //         example_id: example_id_gl,
+            //         category: category_gl,
+            //         seed_concept: seed_concept_gl,
+            //         q1_input: q1_input,
+            //         q1_exp: q1_exp,
+            //         q2_input: q2_input,
+            //         q2_exp: q2_exp,
+            //         q3_input: q3_input,
+            //         q3_query: q3_query,
+            //         q3_rank: q3_rank,
+            //         q4_input: q4_input
+            //     },
+            //     error: function (xhr, status, error) {
+            //         alert("An error occurred: " + error);
+            //     }
+            // });
+
+            // Send the POST request with Fetch API
+            const data = {
+                anno_id: anno_id,
+                culture: culture_gl,
+                example_id: example_id_gl,
+                category: category_gl,
+                seed_concept: seed_concept_gl,
+                q1_input: q1_input,
+                q1_exp: q1_exp,
+                q2_input: q2_input,
+                q2_exp: q2_exp,
+                q3_input: q3_input,
+                q3_query: q3_query,
+                q3_rank: q3_rank,
+                q4_input: q4_input
+            }
+
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'  // Send the data as JSON
                 },
-                // success: function (response) {
-                //     alert("Data exported successfully!");
-                // },
-                error: function (xhr, status, error) {
-                    alert("An error occurred: " + error);
-                }
-            });
+                body: JSON.stringify(data)
+            })
+                .then(response => response.text())  // Handle the response from the server
+                .then(result => {
+                    console.log('Success:', result);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
             // Download image to server of S3:
             if (q1_input == "yes") {
                 var image_path = `${category_gl}_${seed_concept_gl}_${anno_id}.png`
                 image_path = image_path.replace(/\s+/g, '_');
-                $.ajax({
-                    url: 'resources/php/download_image.php',  // PHP file that will handle the image download
-                    type: 'POST',
-                    data: { url: q3_input, path_name: image_path },    // Send the image URL
-                    success: function (response) {
-                        $('#status').text(response);  // Show the status of the download
+
+                // $.ajax({
+                //     url: 'nodejs-ssl-server/mm_genome_uis/step1/resources/php/download_image.php',  // PHP file that will handle the image download
+                //     type: 'POST',
+                //     data: { url: q3_input, path_name: image_path },    // Send the image URL
+                //     success: function (response) {
+                //         $('#status').text(response);  // Show the status of the download
+                //     },
+                //     error: function () {
+                //         $('#status').text('Error downloading the image.');
+                //     }
+                // });
+
+                // Prepare the data to send
+                const img_data = {
+                    url: q3_input,
+                    path_name: image_path
+                };
+
+                // Send the POST request using Fetch API
+                fetch('/download-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'  // Send data as JSON
                     },
-                    error: function () {
-                        $('#status').text('Error downloading the image.');
-                    }
-                });
+                    body: JSON.stringify(img_data)  // Convert data object to JSON string
+                })
+                    .then(response => response.text())  // Handle the response (as text)
+                    .then(result => {
+                        console.log('Success:', result);
+                        alert(result);  // Display success message
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error: ' + error.message);  // Display error message
+                    });
+
             };
 
 

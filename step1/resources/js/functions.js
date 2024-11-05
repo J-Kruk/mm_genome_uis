@@ -35,7 +35,7 @@ WebResultsRenderedCallback = function (name, q, promos, results) {
 
         // Visualize the selected image so annotator could review
         if ($('#selected_img_box').find('img').length > 0) {
-            $('#selected_img').attr("src", q3_input)
+            $('#selected_img').attr("src", imageUrl)
             $("#selected_img_box").show();
         } else {
             $('#selected_img_box').append('<img id="selected_img" src="' + imageUrl + '" alt="Image selected by annotator.">');

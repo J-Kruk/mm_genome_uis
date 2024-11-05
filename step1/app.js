@@ -1,63 +1,97 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
+const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
+
 const app = express();
-const hostname = '127.0.0.1'; // Your server ip address
+// const hostname = '127.0.0.1'; // Your server ip address
+const hostname = '172.31.33.26'; // Your server ip address
 const port = 3000;
-const cors = require("cors");
-const OpenAI = require("openai");
+
 const version = '1.0.0';
+
+// Path to the existing CSV file
+const out_file = path.join(__dirname, 'mm_genome_uis/step1/data/inputs.csv');
+const out_image_dir = path.join(__dirname, 'mm_genome_uis/step1/data/images');
+
+// Middleware to parse JSON body from POST requests
 app.use(express.json());
 
-// Enable CORS for your front-end
-const corsOptions = {
-    //origin: "http://localhost:3000",
-    origin: "https://cjziems2.github.io",
-    credentials: true
-};
-app.use(cors(corsOptions));
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY, // Replace with your OpenAI API key
-});
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'mm_genome_uis/step1')));
+
 app.get('/', (req, res) => {
-    // set response content    
-    res.send(`<html>
-                    <body>
-                        <h1 style="color:blue;text-align: center;margin-top: 100px;"> [Version ${version}]: This is AMAZING!!! Like & Subscribe!</h1>
-                        <div style="position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%)">
-                            <img src="https://picsum.photos/400/400?random=1">
-                        </div>
-                    </body>
-                   </html>`);
-    console.log(`[Version ${version}]: New request => http://${hostname}:${port}` + req.url);
+    // Serve index.html when the root URL is accessed
+    res.sendFile(path.join(__dirname, 'mm_genome_uis/step1', 'index.html'));
+
+    //console.log(`[Version ${version}]: New request => http://${hostname}:${port}` + req.url);
 })
 
-app.post("/genome", async (req, res) => {
-    console.log('pinged genome');
+// Handle POST request to '/submit'
+app.post('/submit', (req, res) => {
+    // Get the data from the POST request body
+    const {
+        anno_id, culture, example_id, category, seed_concept: concept,
+        q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input
+    } = req.body;
+
+    // Open the CSV file and write the data as a new row
+    const csvData = [anno_id, culture, example_id, category, concept, q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input];
+
+    // Writing row to CSV file
+    fs.appendFile(out_file, csvData.join(',') + '\n', (err) => {
+        if (err) {
+            console.error('Error writing to CSV:', err);
+            return res.status(500).send('Failed to save data');
+        }
+        // console.log('Data written to CSV:', csvData);
+        // res.send('Data successfully saved to CSV');
+    });
+});
+
+// Route to handle image downloading and saving
+app.post('/download-image', async (req, res) => {
+    const { url, path_name } = req.body;
+
+    if (!url || !path_name) {
+        return res.status(400).send(
+            'Error: Both "url" and "path_name" fields are required.'
+        );
+    }
+
+    // Directory to save the downloaded image
+    const savePath = path.join(out_image_dir, path_name);
+
     try {
-        const bod = req.body; //JSON.parse(req.body);
-        console.log(bod);
-        const message = bod.prompt; //req.body.message;
-        console.log(message);
-        console.log('message above');
-        const completion = await openai.chat.completions.create({
-            messages: [{ "role": "system", "content": "You are a helpful assistant." },
-            { "role": "user", "content": message }],
-            model: "gpt-3.5-turbo"
-        });
-        console.log(completion);
-        res.status(200).json({
-            message: "Finished running the prompt.",
-            payload: {
-                fullPrompt: message,
-                result: completion.choices[0].message.content
+        // Download image data using fetch (similar to file_get_contents in PHP)
+        const response = await fetch(url);
+        if (!response.ok) {
+            return res.status(400).send('Error: Could not download image.');
+        }
+
+        const imageData = await response.buffer();  // Get the image data as a buffer
+
+        // Ensure the save directory exists
+        if (!fs.existsSync(out_image_dir)) {
+            fs.mkdirSync(out_image_dir, { recursive: true });
+        }
+
+        // Save the image to the specified path (similar to file_put_contents in PHP)
+        fs.writeFile(savePath, imageData, (err) => {
+            if (err) {
+                console.error('Error saving image:', err);
+                return res.status(500).send('Error: Could not save the image.');
             }
+            // console.log('Image downloaded and saved to:', savePath);
+            // res.send(`Image downloaded successfully and saved to: ${savePath}`);
         });
-    } catch (err) {
-        res.status(500).json({ error: "Internal Server Error" });
-        console.log(err);
-        return;
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error: ' + error.message);
     }
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`[Version ${version}]: Server running at http://${hostname}:${port}/`);
 })
