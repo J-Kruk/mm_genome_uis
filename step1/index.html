@@ -20,7 +20,7 @@
 
         <div id="anno_id_popup">
             <p>Enter your participant ID</p>
-            <textarea id="anno_id_input" name="anno_id_input"></textarea>
+            <textarea class="anno_inputs_start" id="anno_id_input" name="anno_id_input"></textarea>
 
             <p>Enter your cultural background</p>
             <div class="dropdown">
@@ -34,6 +34,11 @@
                     <option value="Nigerian">Nigerian</option>
                 </select>
             </div>
+
+            <div>
+                <p>Enter the region / state you are from</p>
+                <textarea class="anno_inputs_start" id="region_input" name="region_input"></textarea>
+            </div>
             <!-- <p id="anno_input_message"></p> -->
             <button id="close-popup-2">Done</button>
         </div>
@@ -46,9 +51,15 @@
             <h2>Instructions </h2>
 
             <p>
-                An example <b>image</b> and a <b>concept</b> is displayed below.
-                Please review this pair and consider whether this image is a good representation
-                of this <b>concept, theme, or idea</b> in your culture. Please complete the tasks that follow.
+                The goal of this task is to collect cultural knowledge that can be represented by images, directly from
+                members of the community.
+            </p>
+            <p>
+                You will be presented with a cultural <b>concept</b>, a <b>question</b>, and an <b>example answer</b>.
+                Your task is to (1) critique how this <b>concept, theme, or idea</b>
+                is represented by the example answer, and (2) contribute a better image and justification for the
+                cultural
+                concept.
             </p>
 
             <div class="expand_intros" id="exp_intro">
@@ -59,6 +70,10 @@
                 <ul>
                     <li>For the <b>first question</b>, let us know if the concept, theme, or idea exists in your
                         culture. Select yes or no.</li>
+                    <ul>
+                        <li>If no, let us know what would be the closest practice or belief to the concept shown.
+                        </li>
+                    </ul>
                     <li>The <b>second question</b> will ask if you believe the image is a good representation of the
                         concept in your culture. Select yes or no. </li>
                     <ul>
@@ -96,14 +111,27 @@
 
         <!-- Concept & Image Example -->
         <div class="concept_container texts">
-            <div class="concept_box">
-                <p class="concept" id="concept_head"><b>Concept:</b></p>
-                <p class="concept" id="concept_question">...</p>
+            <div class="concept_box side-by-side">
+                <div id="concept_texts">
+                    <p class="concept"><b>Concept</b></p>
+                    <p class="concept" id="concept_head">...</p>
+                    <p class="concept"><b>Question</b></p>
+                    <p class="concept" id="concept_question">...</p>
+                </div>
+                <div id="example_note">
+                    <p class="note"><b>NOTE:</b> When answering questions about your culture, consider answers that
+                        other members of
+                        your community may agree or be familiar with.</p>
+                </div>
             </div>
 
-            <div class="concept_example">
-                <p class="image_note">The following image is meant to visually represent this concept
-                    or theme.</p>
+            <div class="concept_example side-by-side">
+                <p class="image_note" style="font-style: italic; font-size: 12px;"><b>DISCLAIMER:</b> This example could
+                    be
+                    incorrect, and
+                    potentially offensive,
+                    inappropriate or harmful.</p>
+                <p class="concept"><b>Example Input</b></p>
                 <img class="exp_concept_img"
                     src="https://t4.ftcdn.net/jpg/05/05/39/07/360_F_505390776_8ilykzGiVSpIjUqdEXFhDY1ACRJZPDRD.jpg" />
                 <p id="example_img_cap"><b>Reasoning:</b> ...</p>
@@ -134,7 +162,9 @@
 
         <div class='question_divs texts' id="q2_div">
             <br>
-            <h3><b>Q2:</b> Is this image a good representation of this concept in your culture?</h3>
+            <h3><b>Q2:</b> Is the image and reasoning shown in the <i>Example Input</i> a good
+                representation of this concept in your culture?</h3>
+            <p>If the image is adequate but the reasoning is wrong, let us know how.</p>
             <div class="button_form" id="good_rep">
                 <button class="q2" id="rep_1" value="yes">Yes</button>
                 <button class="q2" id="rep_2" value="no">No</button>
@@ -153,11 +183,11 @@
         <div class='question_divs texts' id="q3_div">
             <!--<div class="gcse-searchbox">, <div class="gcse-searchresults">-->
             <br>
-            <h3><b>Q3:</b> Use the Image Search Tool below to select an image that represents the concept or idea
+            <h3><b>Q3:</b> Use the Image Search Tool below to select a BETTER image that represents the concept shown
                 above in your culture.</h3>
 
-            <p class="image_note">If the search result DOES NOT show images, please refresh the page. Your pevious
-                inputs will be saved.</p>
+            <p class="image_note"><b>NOTE:</b> If the search results DO NOT show images, please refresh the page. Your
+                pevious inputs will be saved.</p>
 
             <!-- Search Box -->
             <div class="gcse-searchbox" data-enableHistory="true" data-autoCompleteMaxCompletions="5"
@@ -169,7 +199,6 @@
         </div>
 
         <!-- Visualize selected image -->
-
         <div id="selected_img_box" class="question_divs texts"></div>
 
         <!-- Q4: Image Description -->
@@ -177,7 +206,8 @@
         <div class='question_divs texts' id="q4_div">
             <br>
             <h3><b>Q4:</b> Please provide a description of the image you selected.</h3>
-            <p>Why is this image a good representation of this concept, idea, or practice in your culture?</p>
+            <p>Why is the image you chose a good representation of this concept, idea, or practice in your culture? Is
+                this something other members of your community will be familiar with?</p>
             <textarea id="q4" name="q4">Describe the image in 2 - 3 sentences...</textarea>
         </div>
 

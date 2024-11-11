@@ -32,15 +32,15 @@ app.get('/', (req, res) => {
 app.post('/submit', (req, res) => {
     // Get the data from the POST request body
     const {
-        anno_id, culture, example_id, category, seed_concept: concept,
+        anno_id, culture, region, example_id, category, seed_concept: concept,
         q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input
     } = req.body;
 
     // Open the CSV file and write the data as a new row
-    const csvData = [anno_id, culture, example_id, category, concept, q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input];
+    const csvData = [anno_id, culture, region, example_id, category, concept, q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input];
 
     // Writing row to CSV file
-    fs.appendFile(out_file, csvData.join(',') + '\n', (err) => {
+    fs.appendFile(out_file, csvData.join('|') + '\n', (err) => {
         if (err) {
             console.error('Error writing to CSV:', err);
             return res.status(500).send('Failed to save data');
@@ -91,6 +91,29 @@ app.post('/download-image', async (req, res) => {
         res.status(500).send('Error: ' + error.message);
     }
 });
+
+
+// Handle POST request to '/submit'
+app.post('/save-image-results-page', (req, res) => {
+    // Get the data from the POST request body
+    const {
+        anno_id, culture, example_id, q3_query, selected_img_path, selected_img_rank, image_search_page, image_search_page_ranks
+    } = req.body;
+
+    // Open the CSV file and write the data as a new row
+    const csvData = [anno_id, culture, example_id, q3_query, selected_img_path, selected_img_rank, image_search_page, image_search_page_ranks];
+    const search_file = path.join(out_image_dir, `${selected_img_path.replace(".png", "")}_searchpage.csv`);
+    // Writing row to CSV file
+    fs.appendFile(search_file, csvData.join('|') + '\n', (err) => {
+        if (err) {
+            console.error('Error writing to CSV:', err);
+            return res.status(500).send('Failed to save data');
+        }
+        // console.log('Data written to CSV:', csvData);
+        // res.send('Data successfully saved to CSV');
+    });
+});
+
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`[Version ${version}]: Server running at http://${hostname}:${port}/`);

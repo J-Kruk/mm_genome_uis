@@ -16,12 +16,16 @@ $(document).ready(function () {
     // Loading annotator id
     var anno_id = localStorage.getItem('anno_id');
     var culture_gl = localStorage.getItem('culture');
+    var region_gl = localStorage.getItem('region');
     console.log("Annotator ID: ", anno_id)
     console.log("Culture: ", culture_gl)
+    console.log("Region: ", region_gl)
+    updateHTML(data_url, culture_gl, df_idx);
 
-    if ((anno_id == null) | (culture_gl == null)) {
-        $('#popupOverlay').show()
+    if ((anno_id == null) | (culture_gl == null) | (region_gl == null)) {
+        $('#popupOverlay').show();
         $("#anno_id_popup").show();
+        $(".concept_container").hide();
     }
 
     var example_id_gl = localStorage.getItem('example_id');
@@ -88,6 +92,9 @@ $(document).ready(function () {
             localStorage.removeItem('example_id');
             localStorage.removeItem('category');
             localStorage.removeItem('seed_concept');
+
+            localStorage.removeItem('q3_input');
+            localStorage.removeItem('all_image_results');
         };
     }
 
@@ -96,10 +103,9 @@ $(document).ready(function () {
         var csvData = await fetchNewCSVRow(data_url, culture, df_idx);
         var category_ = capitalizeWords(csvData.category);
         if (csvData) {
-            $('#concept_head').html(`<b>Concept:</b>  ${category_}, ${csvData.seed_concept}`);
+            $('#concept_head').html(`${category_}, ${csvData.seed_concept}`);
             $('#concept_question').html(`${csvData.question}`);
             $('#example_img_cap').html(`<b>Reasoning:</b> ${csvData.example_ans}`);
-            // $(".exp_concept_img").attr("src", `data/prompts/example_images/${csvData.culture}_${csvData.img_id}_img_0.png`);
             $(".exp_concept_img").attr("src", `https://mm-genome.s3.amazonaws.com/annotation-data/example_images/${csvData.culture}_${csvData.img_id}_img_0.png`);
         }
     }
@@ -123,6 +129,13 @@ $(document).ready(function () {
                 $('#anno_input_message').html('<b>Please select your cultural background.</b>')
             }
 
+        } else if (($("#region_input").val() == null) | ($("#region_input").val() == "")) {
+            if ($('#anno_id_popup').find('#anno_input_message').length === 0) {
+                $('#anno_id_popup').append('<p id="anno_input_message"><b>Please declare the region or state you are from.</b></p>');
+            } else {
+                $('#anno_input_message').html('<b>Please declare the region or state you are from.</b>')
+            }
+
         } else {
             anno_id = $("#anno_id_input").val()
             localStorage.setItem('anno_id', anno_id);
@@ -132,9 +145,14 @@ $(document).ready(function () {
             localStorage.setItem('culture', $("#culture_input").val());
             console.log(culture_gl)
 
+            region_gl = $("#region_input").val()
+            localStorage.setItem('region', $("#region_input").val());
+            console.log(region_gl)
+
             $('#popupOverlay').hide()
             $("#anno_id_popup").hide();
             updateHTML(data_url, culture_gl, df_idx);
+            $(".concept_container").show();
         };
     });
 
@@ -151,6 +169,9 @@ $(document).ready(function () {
     var q3_query = localStorage.getItem('q3_query');
     var q3_rank = localStorage.getItem('q3_rank');
     var q4_input = localStorage.getItem('q4_input');
+    var all_img_search = localStorage.getItem('all_image_results');
+    var all_img_search_ranks = localStorage.getItem('all_image_results_ranks');
+
     console.log('q1_input: ', q1_input)
     console.log('q1_exp: ', q1_exp)
     console.log('q2_input: ', q2_input)
@@ -159,6 +180,9 @@ $(document).ready(function () {
     console.log('q3_query: ', q3_query)
     console.log('q3_rank: ', q3_rank)
     console.log('q4_input: ', q4_input)
+    console.log('all_images_on_search: ', all_img_search)
+    console.log('all_images_ranks_on_search: ', all_img_search_ranks)
+
 
     // activating buttons that have been selected before
     restoreButtonClicks(q1_input, q2_input)
@@ -420,6 +444,7 @@ $(document).ready(function () {
             const data = {
                 anno_id: anno_id,
                 culture: culture_gl,
+                region: region_gl,
                 example_id: example_id_gl,
                 category: category_gl,
                 seed_concept: seed_concept_gl,
@@ -447,6 +472,7 @@ $(document).ready(function () {
                 .catch(error => {
                     console.error('Error:', error);
                 });
+
 
             // Download image to server of S3:
             if (q1_input == "yes") {
@@ -489,6 +515,32 @@ $(document).ready(function () {
                         alert('Error: ' + error.message);  // Display error message
                     });
 
+                // Saving all image urls from the search page
+                const img_search_data = {
+                    anno_id: anno_id,
+                    culture: culture_gl,
+                    example_id: example_id_gl,
+                    q3_query: q3_query,
+                    selected_img_path: image_path,
+                    selected_img_rank: q3_rank,
+                    image_search_page: all_img_search,
+                    image_search_page_ranks: all_img_search_ranks,
+                }
+                // Send POST request using Fetch API
+                fetch('/save-image-results-page', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'  // Send the data as JSON
+                    },
+                    body: JSON.stringify(img_search_data)
+                })
+                    .then(response => response.text())  // Handle the response from the server
+                    .then(result => {
+                        console.log('Success:', result);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             };
 
 
@@ -508,6 +560,8 @@ $(document).ready(function () {
             q3_query = null;
             q3_rank = null;
             q4_input = null;
+            all_img_search = null;
+            all_img_search_ranks = null;
 
             // message = "All inputs saved and image downloaded!"
             // $("#error_message").text(message);

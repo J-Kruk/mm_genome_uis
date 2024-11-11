@@ -61,6 +61,24 @@ WebResultsRenderedCallback = function (name, q, promos, results) {
                 "border": "2px solid black",
             });
         };
+
+        // Get all image URLs of images on the search page 
+        var page_urls = [];
+        var page_img_ranks = [];
+        // var images_on_page = $(this).siblings();
+
+        let $results = $(this)
+        $results.siblings().each(function () {
+            var imageElement_sib = $(this).find("> div.gs-imageResult > div.gs-image-popup-box > div.gs-image-box > a.gs-image > img.gs-image")[0];  // div.gs-image > img.gs-image
+            var imageUrl_sib = imageElement_sib['src'];
+            var sibling_rank = $(this).index()
+
+            page_urls[page_urls.length] = imageUrl_sib;
+            page_img_ranks[page_img_ranks.length] = sibling_rank;
+        })
+
+        localStorage.setItem('all_image_results', page_urls)
+        localStorage.setItem('all_image_results_ranks', page_img_ranks)
     });
 };
 
@@ -79,7 +97,6 @@ async function downloadImage_local(url, out_name) {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-
 };
 
 

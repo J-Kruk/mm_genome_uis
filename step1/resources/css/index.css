@@ -59,6 +59,32 @@ ul li {
 }
 
 /* concept examples */
+.concept_container {
+    display: flex;
+    text-align: center;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 20px;
+}
+
+.side-by-side {
+    flex: 1;
+    box-sizing: border-box;
+}
+
+.concept_box {
+    border-radius: 10px;
+    border-color: #fad2d6;
+    border-width: 5px;
+    border-style: solid;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 20px;
+    padding-top: 15px;
+    position: relative;
+}
+
 .concept_example {
     width: 65%;
     position: relative;
@@ -66,9 +92,6 @@ ul li {
     text-align: center;
     border-radius: 10px;
     background-color: #fad2d6;
-    /* border-color: #ed5867;
-    border-width: 2px;
-    border-style: solid; */
     padding-left: 30px;
     padding-right: 30px;
     padding-bottom: 20px;
@@ -76,12 +99,36 @@ ul li {
 }
 
 .image_note {
-    font-style: italic;
-    font-size: 12px;
+    /* font-style: italic; */
+    font-size: 15px;
+    background-color: #f1faff;
+    border-radius: 10px;
+    padding: 8px;
 }
 
 .concept {
     font-size: 20px;
+}
+
+#concept_question {
+    font-size: 24px;
+    color: #8C1515;
+    font-weight: bold;
+}
+
+#example_note {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    background-color: #f1faff;
+    border-radius: 10px;
+    padding: 8px;
+    margin-bottom: 15px;
+
 }
 
 .exp_concept_img {
@@ -89,6 +136,8 @@ ul li {
     position: relative;
     margin: auto;
 }
+
+/* Note in Q3 about Google Search malfunctions */
 
 /* question containers */
 .question_divs {
@@ -125,7 +174,7 @@ textarea {
     resize: none;
 }
 
-#anno_id_input {
+.anno_inputs_start {
     width: 90%;
     height: 50px;
     padding: 12px 20px;
