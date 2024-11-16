@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     // DEBUG :: reset the idx:
     //localStorage.setItem('df_idx', 1)
-    // localStorage.clear();
+    localStorage.clear();
 
     var df_idx = localStorage.getItem('df_idx');
     if (df_idx == null) {
@@ -17,9 +17,11 @@ $(document).ready(function () {
     var anno_id = localStorage.getItem('anno_id');
     var culture_gl = localStorage.getItem('culture');
     var region_gl = localStorage.getItem('region');
+    var ethnicity_gl = localStorage.getItem('ethnicity');
     console.log("Annotator ID: ", anno_id)
     console.log("Culture: ", culture_gl)
     console.log("Region: ", region_gl)
+    console.log("Ethnicity: ", ethnicity_gl)
     updateHTML(data_url, culture_gl, df_idx);
 
     if ((anno_id == null) | (culture_gl == null) | (region_gl == null)) {
@@ -136,6 +138,13 @@ $(document).ready(function () {
                 $('#anno_input_message').html('<b>Please declare the region or state you are from.</b>')
             }
 
+        } else if (($("#ethnicity_input").val() == null) | ($("#ethnicity_input").val() == "")) {
+            if ($('#anno_id_popup').find('#anno_input_message').length === 0) {
+                $('#anno_id_popup').append('<p id="anno_input_message"><b>Please declare your ethnicity.</b></p>');
+            } else {
+                $('#anno_input_message').html('<b>Please declare the region or state you are from.</b>')
+            }
+
         } else {
             anno_id = $("#anno_id_input").val()
             localStorage.setItem('anno_id', anno_id);
@@ -148,6 +157,10 @@ $(document).ready(function () {
             region_gl = $("#region_input").val()
             localStorage.setItem('region', $("#region_input").val());
             console.log(region_gl)
+
+            ethnicity_gl = $("#ethnicity_input").val()
+            localStorage.setItem('ethnicity', $("#ethnicity_input").val());
+            console.log(ethnicity_gl)
 
             $('#popupOverlay').hide()
             $("#anno_id_popup").hide();
@@ -445,6 +458,7 @@ $(document).ready(function () {
                 anno_id: anno_id,
                 culture: culture_gl,
                 region: region_gl,
+                ethnicity: ethnicity_gl,
                 example_id: example_id_gl,
                 category: category_gl,
                 seed_concept: seed_concept_gl,
@@ -562,6 +576,9 @@ $(document).ready(function () {
             q4_input = null;
             all_img_search = null;
             all_img_search_ranks = null;
+
+            // Clear all image search results
+            ClearImageWebResults()
 
             // message = "All inputs saved and image downloaded!"
             // $("#error_message").text(message);

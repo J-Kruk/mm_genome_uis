@@ -1,4 +1,5 @@
 const express = require('express');
+// app.use(express.json());
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser');
@@ -32,12 +33,12 @@ app.get('/', (req, res) => {
 app.post('/submit', (req, res) => {
     // Get the data from the POST request body
     const {
-        anno_id, culture, region, example_id, category, seed_concept: concept,
+        anno_id, culture, region, ethnicity, example_id, category, seed_concept: concept,
         q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input
     } = req.body;
 
     // Open the CSV file and write the data as a new row
-    const csvData = [anno_id, culture, region, example_id, category, concept, q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input];
+    const csvData = [anno_id, culture, region, ethnicity, example_id, category, concept, q1_input, q1_exp, q2_input, q2_exp, q3_input, q3_query, q3_rank, q4_input];
 
     // Writing row to CSV file
     fs.appendFile(out_file, csvData.join('|') + '\n', (err) => {
@@ -45,7 +46,7 @@ app.post('/submit', (req, res) => {
             console.error('Error writing to CSV:', err);
             return res.status(500).send('Failed to save data');
         }
-        // console.log('Data written to CSV:', csvData);
+        console.log('Data written to CSV:', csvData);
         // res.send('Data successfully saved to CSV');
     });
 });
@@ -83,7 +84,7 @@ app.post('/download-image', async (req, res) => {
                 console.error('Error saving image:', err);
                 return res.status(500).send('Error: Could not save the image.');
             }
-            // console.log('Image downloaded and saved to:', savePath);
+            console.log('Image downloaded and saved to:', savePath);
             // res.send(`Image downloaded successfully and saved to: ${savePath}`);
         });
     } catch (error) {
@@ -93,7 +94,7 @@ app.post('/download-image', async (req, res) => {
 });
 
 
-// Handle POST request to '/submit'
+// Handle POST request to '/save-image-results-page'
 app.post('/save-image-results-page', (req, res) => {
     // Get the data from the POST request body
     const {
@@ -109,12 +110,15 @@ app.post('/save-image-results-page', (req, res) => {
             console.error('Error writing to CSV:', err);
             return res.status(500).send('Failed to save data');
         }
-        // console.log('Data written to CSV:', csvData);
-        // res.send('Data successfully saved to CSV');
     });
 });
 
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`[Version ${version}]: Server running at http://${hostname}:${port}/`);
-})
+});
+
+app.use((req, res, next) => {
+    req.setTimeout(5000); // Set timeout to 5000ms (5 seconds) or adjust as needed
+    next();
+});

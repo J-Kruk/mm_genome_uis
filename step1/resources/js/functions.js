@@ -83,6 +83,26 @@ WebResultsRenderedCallback = function (name, q, promos, results) {
 };
 
 
+// CLEARING IMAGE SEARCH RESULTS ON SUBMIT:
+async function ClearImageWebResults(params) {
+    console.log('Image results rendered:', params);
+
+    // Access the Google PSE API to clear results
+    if (window.google && google.search.cse && google.search.cse.element) {
+        const searchElement = google.search.cse.element.getElement("searchresults-only"); // Adjust ID if needed
+        if (searchElement) {
+            searchElement.execute(""); // Execute empty query to clear results
+        }
+    }
+
+    // Clear the query input field (Adjust selector as per your input field)
+    const searchInput = document.querySelector('#search-input'); // Replace with your input field's ID or class
+    if (searchInput) {
+        searchInput.value = ""; // Clear the search input
+    }
+};
+
+
 // submit logic & button
 async function downloadImage_local(url, out_name) {
     // VERSION 3: SAVES IMAGE LOCALLY NOT ON SERVER!
