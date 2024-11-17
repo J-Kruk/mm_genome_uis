@@ -47,7 +47,6 @@ app.post('/submit', (req, res) => {
             return res.status(500).send('Failed to save data');
         }
         console.log('Data written to CSV:', csvData);
-        // res.send('Data successfully saved to CSV');
     });
 });
 
@@ -89,7 +88,6 @@ app.post('/download-image', async (req, res) => {
         });
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).send('Error: ' + error.message);
     }
 });
 

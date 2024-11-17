@@ -142,7 +142,7 @@ $(document).ready(function () {
             if ($('#anno_id_popup').find('#anno_input_message').length === 0) {
                 $('#anno_id_popup').append('<p id="anno_input_message"><b>Please declare your ethnicity.</b></p>');
             } else {
-                $('#anno_input_message').html('<b>Please declare the region or state you are from.</b>')
+                $('#anno_input_message').html('<b>Please declare your ethnicity.</b>')
             }
 
         } else {
@@ -412,6 +412,7 @@ $(document).ready(function () {
             $('#popupOverlay').show()
             $("#input_error_popup").show();
             console.log("q4 check failed...");
+
         }
         else {
             console.log("SUBMITTED!!!");

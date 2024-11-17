@@ -87,18 +87,10 @@ WebResultsRenderedCallback = function (name, q, promos, results) {
 async function ClearImageWebResults(params) {
     console.log('Image results rendered:', params);
 
-    // Access the Google PSE API to clear results
-    if (window.google && google.search.cse && google.search.cse.element) {
-        const searchElement = google.search.cse.element.getElement("searchresults-only"); // Adjust ID if needed
-        if (searchElement) {
-            searchElement.execute(""); // Execute empty query to clear results
-        }
-    }
-
-    // Clear the query input field (Adjust selector as per your input field)
-    const searchInput = document.querySelector('#search-input'); // Replace with your input field's ID or class
-    if (searchInput) {
-        searchInput.value = ""; // Clear the search input
+    // Simulate a click on the "X" button
+    const clearButton = $('.gsst_a')
+    if (clearButton) {
+        clearButton.click();
     }
 };
 
