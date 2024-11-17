@@ -117,6 +117,6 @@ app.listen(port, '0.0.0.0', () => {
 });
 
 app.use((req, res, next) => {
-    req.setTimeout(5000); // Set timeout to 5000ms (5 seconds) or adjust as needed
+    req.setTimeout(1000000); // Set timeout to 5000ms (5 seconds) or adjust as needed
     next();
 });

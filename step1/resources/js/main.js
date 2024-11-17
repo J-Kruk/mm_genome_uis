@@ -3,8 +3,8 @@ $(document).ready(function () {
     const data_url = 'data/prompts/batches/pilot.csv'
 
     // DEBUG :: reset the idx:
-    //localStorage.setItem('df_idx', 1)
-    localStorage.clear();
+    // localStorage.setItem('df_idx', 1)
+    // localStorage.clear();
 
     var df_idx = localStorage.getItem('df_idx');
     if (df_idx == null) {
@@ -580,6 +580,12 @@ $(document).ready(function () {
 
             // Clear all image search results
             ClearImageWebResults()
+
+            // Scroll back to the top of the page
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Smooth scrolling effect
+            });
 
             // message = "All inputs saved and image downloaded!"
             // $("#error_message").text(message);
